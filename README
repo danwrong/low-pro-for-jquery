@@ -1,0 +1,60 @@
+Low Pro JQ
+----------
+
+Author: Dan Webb (dan@danwebb.net)
+SVN: http://svn.danwebb.net/external/lowpro-jq/trunk
+Download: http://svn.danwebb.net/external/lowpro-jq/trunk/src/lowpro.jquery.js
+
+A jQuery port of the Low Pro behavior framework that was originally written for Prototype.
+
+
+
+In brief
+--------
+
+Create a behavior as a class:
+
+Testy = $.klass({
+ initialize: function(arg) {
+   alert('ive just been attached with the arg ' + arg);
+ },
+ onclick: function() {
+   alert('ive been clicked');
+ }
+});
+
+Btw, $.klass is a full port of Prototype's Class.create so youget that as a bonus and 
+can use all the inheritance stuff in the same way.
+
+Next, attach the behavior on DOM ready in the jQuery way:
+
+jQuery(function($) {
+ $('p').attach(Testy, 'My arg');
+});
+
+Alternatively, if you just need to attach behaviors and get references to the behavior instances
+created then you can use:
+
+$('a').attachAndReturn(Clicky, 45) //=> Array of behavior instances
+
+Aside from this everything works the same as Low Pro for Prototype.
+See http://www.danwebb.net/lowpro for details.
+
+
+
+Livequery support
+-----------------
+
+If the livequery plugin is found then Low Pro will use it to automatically bind behaviors to
+newly created content so if, taking the above example, you did something like:
+
+$(document.body).append('<p>A new para</p>')
+
+Then it too would get a behavior binded to it.
+
+
+
+Acknowledgements
+----------------
+
+The $.klass code is a direct port of the Class.create code from Prototype (http://prototypejs.org).

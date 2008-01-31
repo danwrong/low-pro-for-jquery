@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Low Pro JQ</title>
+	<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+	<script src="livequery.jquery.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../src/lowpro.jquery.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+	 Man = $.klass({
+	   initialize: function(a) {
+	     this.a = a;
+	   },
+	   test: function() {
+	     console.log(this.a);
+	   }
+	 });
+	 
+	 Dan = $.klass(Man, {
+	   test: function($super) {
+	     $super();
+	     console.log('bitch!');
+	   }
+	 });
+	 
+	 Clicky = $.klass({
+	   initialize: function(arg) {
+	     console.log('Ive been applied with arg: ' + arg);
+	   },
+	   onclick: function() {
+	     console.log('clicked');
+	     console.log(this.element);
+	   }
+	 })
+	 
+	 jQuery(function($) {
+	   $('p').attach(Clicky, 56);
+	   $('a').attach(Remote);
+	   $('form').attach(Remote)
+	 });
+	</script>
+</head>
+<body>
+<h1>Thing</h1>
+<p>Yeah woo</p>
+<div>sLKD JSAkd ;sjadlk sajd ; <a href="request.html">Yeah</a></div>
+<form action="request.html" method="post">
+  <input name="boing" />
+  
+  <input name="thing4545" />
+  <input type='submit' name="boo" value="thing" />
+  <input type='submit' name="boo2" value="thing2" />
+</body>
+</html>
