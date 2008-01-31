@@ -2,8 +2,8 @@ Low Pro JQ
 ----------
 
 Author: Dan Webb (dan@danwebb.net)
-SVN: http://svn.danwebb.net/external/lowpro-jq/trunk
-Download: http://svn.danwebb.net/external/lowpro-jq/trunk/src/lowpro.jquery.js
+GIT: github.com:danwrong/low-pro-for-jquery.git
+Download: http://github.com/danwrong/low-pro-for-jquery/tree/master/src/lowpro.jquery.js?raw=true
 
 A jQuery port of the Low Pro behavior framework that was originally written for Prototype.
 
