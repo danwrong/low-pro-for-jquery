@@ -91,7 +91,7 @@
     return $.klass(behavior, {
       initialize: function($super, element, args) {
         this.element = $(element);
-        $super.apply(this, args);
+        if ($super) $super.apply(this, args);
       }
     });
   }
@@ -163,7 +163,7 @@
     onclick: function(e) {
       var target = e.target;
       
-      if ($.inArray(target.nodeName.toLowerCase(), ['input', 'button']) >= 0 && target.type == 'submit')
+      if ($.inArray(target.nodeName.toLowerCase(), ['input', 'button']) >= 0 && target.type.match(/submit|image/))
         this._submitButton = target;
     },
     onsubmit: function() {
