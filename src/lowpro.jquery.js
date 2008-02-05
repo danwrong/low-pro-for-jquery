@@ -87,10 +87,18 @@
     }
   }
   
+  var behaviorWrapper = function(behavior) {
+    return $.klass(behavior, {
+      initialize: function($super, element, args) {
+        this.element = $(element);
+        $super.apply(this, args);
+      }
+    });
+  }
+  
   var attachBehavior = function(el, behavior, args) {
-      var instance = { element: $(el) };
-      instance.__proto__ = behavior.prototype;
-      behavior.apply(instance, args);
+      var wrapper = behaviorWrapper(behavior);
+      instance = new wrapper(el, args);
 
       bindEvents(instance);
 
