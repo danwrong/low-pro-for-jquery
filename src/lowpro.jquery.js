@@ -115,9 +115,9 @@
       var args = $.makeArray(arguments), behavior = args.shift();
       
       if ($.livequery && this.selector) {
-        this.livequery(function() {
+        return this.livequery(function() {
           attachBehavior(this, behavior, args);
-        })
+        });
       } else {
         return this.each(function() {
           attachBehavior(this, behavior, args);
