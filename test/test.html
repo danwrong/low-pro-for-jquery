@@ -28,17 +28,18 @@
 	 Clicky = $.klass({
 	   initialize: function(arg) {
 	     console.log('Ive been applied with arg: ' + arg);
+	     this.arg = arg;
 	   },
-	   onclick: function() {
-	     console.log('clicked');
-	     console.log(this.element);
-	   }
+	   onclick: $.delegate({
+ 	     '#woo': function() { alert(this.arg) },
+ 	     '#yeah': function() { console.log(this, arguments) }
+ 	   })
 	 })
 	 
 	 jQuery(function($) {
-	   $('p').attach(Clicky, 56);
+	   $('#thing').attach(Clicky, 56);
 	   $('a').attach(Remote);
-	   $('form').attach(Remote)
+	   $('form').attach(Remote);
 	 });
 	</script>
 </head>
@@ -52,5 +53,11 @@
   <input name="thing4545" />
   <input type='submit' name="boo" value="thing" />
   <input type='submit' name="boo2" value="thing2" />
+</form>
+
+<div id="thing">
+  <span id="yeah">Yeah</p>
+  <span id="woo">woo</span>
+</div>
 </body>
 </html>
