@@ -137,6 +137,9 @@
       return $.map(this, function(el) {
         return attachBehavior(el, behavior, args);
       });
+    },
+    delegate: function(type, rules) {
+      return this.bind(type, $.delegate(rules));
     }
   });
   
