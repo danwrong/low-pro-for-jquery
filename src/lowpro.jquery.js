@@ -140,6 +140,22 @@
     },
     delegate: function(type, rules) {
       return this.bind(type, $.delegate(rules));
+    },
+    attached: function(behavior) {
+      var instances = [];
+      
+      if (!behavior.instances) return instances;
+      
+      this.each(function(i, element) {
+        $.each(behavior.instances, function(i, instance) {
+          if (instance.element.get(0) == element) instances.push(instance);
+        });
+      });
+      
+      return instances;
+    },
+    firstAttached: function(behavior) {
+      return this.attached(behavior)[0];
     }
   });
   
