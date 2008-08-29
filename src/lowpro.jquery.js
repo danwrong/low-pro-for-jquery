@@ -79,10 +79,12 @@
     },
     delegate: function(rules) {
       return function(e) {
-        var target = $(e.target);
+        var target = $(e.target), parent = null;
         for (var selector in rules) {
-          if (target.is(selector) || ((target = target.parents(selector)) && target.length > 0)) 
-            return rules[selector].apply(this, [target].concat($.makeArray(arguments)));
+          if (target.is(selector) || ((parent = target.parents(selector)) && parent.length > 0)) {
+            return rules[selector].apply(this, [parent || target].concat($.makeArray(arguments)));
+          }
+          parent = null;
         }
       }
     }
