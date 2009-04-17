@@ -1,5 +1,5 @@
 (function($) {
-  
+
   var addMethods = function(source) {
     var ancestor   = this.superclass && this.superclass.prototype;
     var properties = $.keys(source);
@@ -9,7 +9,7 @@
     for (var i = 0, length = properties.length; i < length; i++) {
       var property = properties[i], value = source[property];
       if (ancestor && $.isFunction(value) && $.argumentNames(value)[0] == "$super") {
-        
+
         var method = value, value = $.extend($.wrap((function(m) {
           return function() { return ancestor[m].apply(this, arguments) };
         })(property), method), {
@@ -22,7 +22,7 @@
 
     return this;
   }
-  
+
   $.extend({
     keys: function(obj) {
       var keys = [];
@@ -47,12 +47,12 @@
         return wrapper.apply(this, [$.bind(__method, this)].concat($.makeArray(arguments)));
       }
     },
-    
+
     klass: function() {
       var parent = null, properties = $.makeArray(arguments);
       if ($.isFunction(properties[0])) parent = properties.shift();
 
-      var klass = function() { 
+      var klass = function() {
         this.initialize.apply(this, arguments);
       };
 
@@ -89,7 +89,7 @@
       }
     }
   });
-  
+
   var bindEvents = function(instance) {
     for (var member in instance) {
       if (member.match(/^on(.+)/) && typeof instance[member] == 'function') {
@@ -97,7 +97,7 @@
       }
     }
   }
-  
+
   var behaviorWrapper = function(behavior) {
     return $.klass(behavior, {
       initialize: function($super, element, args) {
@@ -106,7 +106,7 @@
       }
     });
   }
-  
+
   var attachBehavior = function(el, behavior, args) {
       var wrapper = behaviorWrapper(behavior);
       instance = new wrapper(el, args);
@@ -116,15 +116,15 @@
       if (!behavior.instances) behavior.instances = [];
 
       behavior.instances.push(instance);
-      
+
       return instance;
   };
-  
-  
+
+
   $.fn.extend({
     attach: function() {
       var args = $.makeArray(arguments), behavior = args.shift();
-      
+
       if ($.livequery && this.selector) {
         return this.livequery(function() {
           attachBehavior(this, behavior, args);
@@ -137,7 +137,7 @@
     },
     attachAndReturn: function() {
       var args = $.makeArray(arguments), behavior = args.shift();
-      
+
       return $.map(this, function(el) {
         return attachBehavior(el, behavior, args);
       });
@@ -147,29 +147,29 @@
     },
     attached: function(behavior) {
       var instances = [];
-      
+
       if (!behavior.instances) return instances;
-      
+
       this.each(function(i, element) {
         $.each(behavior.instances, function(i, instance) {
           if (instance.element.get(0) == element) instances.push(instance);
         });
       });
-      
+
       return instances;
     },
     firstAttached: function(behavior) {
       return this.attached(behavior)[0];
     }
   });
-  
+
   Remote = $.klass({
     initialize: function(options) {
       if (this.element.attr('nodeName') == 'FORM') this.element.attach(Remote.Form, options);
       else this.element.attach(Remote.Link, options);
     }
   });
-  
+
   Remote.Base = $.klass({
     initialize : function(options) {
       this.options = options;
@@ -179,7 +179,7 @@
       return false;
     }
   });
-  
+
   Remote.Link = $.klass(Remote.Base, {
     onclick: function() {
       var options = $.extend({ 
@@ -189,35 +189,36 @@
       return this._makeRequest(options);
     }
   });
-  
+
   Remote.Form = $.klass(Remote.Base, {
     onclick: function(e) {
       var target = e.target;
-      
+
       if ($.inArray(target.nodeName.toLowerCase(), ['input', 'button']) >= 0 && target.type.match(/submit|image/))
         this._submitButton = target;
     },
     onsubmit: function() {
       var data = this.element.serializeArray();
-      
+
       if (this._submitButton) data.push({ name: this._submitButton.name, value: this._submitButton.value });
-      
+
       var options = $.extend({
         url : this.element.attr('action'),
         type : this.element.attr('method') || 'GET',
         data : data
       }, this.options);
-      
+
       this._makeRequest(options);
-      
+
       return false;
     }
   });
-  
-  $.ajaxSetup({ 
+
+  $.ajaxSetup({
     beforeSend: function(xhr) {
-      xhr.setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*");
-    } 
+      if (!this.dataType)
+        xhr.setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*");
+    }
   });
-  
+
 })(jQuery);
