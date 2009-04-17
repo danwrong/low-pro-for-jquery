@@ -172,9 +172,7 @@
   
   Remote.Base = $.klass({
     initialize : function(options) {
-      this.options = $.extend({
-        
-      }, options || {});
+      this.options = options;
     },
     _makeRequest : function(options) {
       $.ajax(options);
@@ -184,7 +182,10 @@
   
   Remote.Link = $.klass(Remote.Base, {
     onclick: function() {
-      var options = $.extend({ url: this.element.attr('href'), type: 'GET' }, this.options);
+      var options = $.extend({ 
+        url: this.element.attr('href'), 
+        type: 'GET' 
+      }, this.options);
       return this._makeRequest(options);
     }
   });
