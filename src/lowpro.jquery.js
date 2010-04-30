@@ -103,6 +103,10 @@
       initialize: function($super, element, args) {
         this.element = $(element);
         if ($super) $super.apply(this, args);
+      },
+      trigger: function(eventType, extraParameters) {
+        var parameters = [this].concat(extraParameters);
+        this.element.trigger(eventType, parameters);
       }
     });
   }
