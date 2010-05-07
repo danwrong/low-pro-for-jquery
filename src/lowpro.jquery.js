@@ -113,7 +113,7 @@
 
   var attachBehavior = function(el, behavior, args) {
       var wrapper = behaviorWrapper(behavior);
-      instance = new wrapper(el, args);
+      var instance = new wrapper(el, args);
 
       bindEvents(instance);
 
