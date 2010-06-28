@@ -21,7 +21,7 @@
     }
 
     return this;
-  }
+  };
 
   $.extend({
     keys: function(obj) {
@@ -38,14 +38,14 @@
     bind: function(func, scope) {
       return function() {
         return func.apply(scope, $.makeArray(arguments));
-      }
+      };
     },
 
     wrap: function(func, wrapper) {
       var __method = func;
       return function() {
         return wrapper.apply(this, [$.bind(__method, this)].concat($.makeArray(arguments)));
-      }
+      };
     },
 
     klass: function() {
@@ -86,22 +86,22 @@
           }
           parent = null;
         }
-      }
+      };
     }
   });
 
   var bindEvents = function(instance) {
     for (var member in instance) {
       if (member.match(/^on(.+)/) && typeof instance[member] == 'function') {
-        instance.element.bind(RegExp.$1, $.bind(instance[member], instance));
+        instance.element.live(RegExp.$1, {'behavior': instance}, instance[member]);
       }
     }
-  }
+  };
 
   var behaviorWrapper = function(behavior) {
     return $.klass(behavior, {
       initialize: function($super, element, args) {
-        this.element = $(element);
+        this.element = element;
         if ($super) $super.apply(this, args);
       },
       trigger: function(eventType, extraParameters) {
@@ -109,7 +109,7 @@
         this.element.trigger(eventType, parameters);
       }
     });
-  }
+  };
 
   var attachBehavior = function(el, behavior, args) {
       var wrapper = behaviorWrapper(behavior);
@@ -128,23 +128,8 @@
   $.fn.extend({
     attach: function() {
       var args = $.makeArray(arguments), behavior = args.shift();
-
-      if ($.livequery && this.selector) {
-        return this.livequery(function() {
-          attachBehavior(this, behavior, args);
-        });
-      } else {
-        return this.each(function() {
-          attachBehavior(this, behavior, args);
-        });
-      }
-    },
-    attachAndReturn: function() {
-      var args = $.makeArray(arguments), behavior = args.shift();
-
-      return $.map(this, function(el) {
-        return attachBehavior(el, behavior, args);
-      });
+      attachBehavior(this, behavior, args);
+      return this;
     },
     delegate: function(type, rules) {
       return this.bind(type, $.delegate(rules));
@@ -176,7 +161,7 @@
 
   Remote.Base = $.klass({
     initialize : function(options) {
-      this.options = options;
+      this.options = $.extend(true, {}, options || {});
     },
     _makeRequest : function(options) {
       $.ajax(options);
@@ -185,12 +170,12 @@
   });
 
   Remote.Link = $.klass(Remote.Base, {
-    onclick: function() {
+    onclick: function(e) {
       var options = $.extend({ 
-        url: this.element.attr('href'), 
+        url: $(this).attr('href'), 
         type: 'GET' 
       }, this.options);
-      return this._makeRequest(options);
+      return e.data.behavior._makeRequest(e.data.behavior.options);
     }
   });
 
@@ -199,20 +184,23 @@
       var target = e.target;
 
       if ($.inArray(target.nodeName.toLowerCase(), ['input', 'button']) >= 0 && target.type.match(/submit|image/))
-        this._submitButton = target;
+        e.data.behavior._submitButton = target;
     },
-    onsubmit: function() {
-      var data = this.element.serializeArray();
+    onsubmit: function(e) {
+      var elm = $(this), data = elm.serializeArray();
 
-      if (this._submitButton) data.push({ name: this._submitButton.name, value: this._submitButton.value });
+      if (e.data.behavior._submitButton) data.push({ 
+        name: e.data.behavior._submitButton.name, 
+        value: e.data.behavior._submitButton.value 
+      });
 
       var options = $.extend({
-        url : this.element.attr('action'),
-        type : this.element.attr('method') || 'GET',
+        url : elm.attr('action'),
+        type : elm.attr('method') || 'GET',
         data : data
-      }, this.options);
+      }, e.data.behavior.options);
 
-      this._makeRequest(options);
+      e.data.behavior._makeRequest(options);
 
       return false;
     }
